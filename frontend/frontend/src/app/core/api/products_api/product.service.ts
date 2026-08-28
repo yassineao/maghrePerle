@@ -14,6 +14,7 @@ import {
 } from 'rxjs';
 import { environment } from '../../../../../environment';
 import { ProductImageService } from '../supabase_api/product_image.service';
+import { SupabaseCatalogService } from '../supabase_api/supabase-catalog.service';
 
 export interface ProductCreateRequest {
   name: string;
@@ -32,7 +33,9 @@ export class ProductsService {
   private httpClient = inject(HttpClient);
   private apiUrl: string = environment.apiUrl;
   private productImageService = inject(ProductImageService);
+  private supabaseCatalogService = inject(SupabaseCatalogService);
   private productsRequest?: Observable<Product[]>;
+  private activeProductsRequest?: Observable<Product[]>;
   readonly productsLoaded = signal(false);
 
   getProducts(): Observable<Product[]> {
@@ -40,31 +43,13 @@ export class ProductsService {
       return this.productsRequest;
     }
 
-    this.productsRequest = this.httpClient.get<Product[]>(`${this.apiUrl}/product`).pipe(
-      switchMap((products) => {
-        if (products.length === 0) {
-          return of<Product[]>([]);
-        }
+    const productsSource =
+      environment.productDataSource === 'supabase'
+        ? this.supabaseCatalogService.getProducts()
+        : this.getProductsFromSpring();
 
-        return forkJoin(
-          products.map((product) => {
-            const parsedProduct = this.parseProductOptions(product);
-            return this.productImageService.getProductImages(product.id).pipe(
-              map((images) => ({
-                ...parsedProduct,
-                productImage: images,
-              })),
-              catchError(() =>
-                of({
-                  ...parsedProduct,
-                  productImage: [],
-                }),
-              ),
-            );
-          }),
-        );
-      }),
-
+    this.productsRequest = productsSource.pipe(
+      map((products) => products.map((product) => this.parseProductOptions(product))),
       tap(() => this.productsLoaded.set(true)),
       catchError((error) => {
         this.productsRequest = undefined;
@@ -77,24 +62,71 @@ export class ProductsService {
     return this.productsRequest;
   }
 
-  getActiveProducts(): Observable<Product[]> {
-    return this.httpClient.get<Product[]>(`${this.apiUrl}/product/active`).pipe(
-      map((products) => products.map((product) => this.parseProductOptions(product))),
-      switchMap((products) =>
-        products.length === 0
-          ? of([])
-          : forkJoin(
-              products.map((product) =>
-                this.productImageService.getProductImages(product.id).pipe(
-                  map((images) => ({
-                    ...product,
-                    productImage: images,
-                  })),
-                ),
+  private getProductsFromSpring(): Observable<Product[]> {
+    return this.httpClient.get<Product[]>(`${this.apiUrl}/product`).pipe(
+      switchMap((products) => {
+        if (products.length === 0) {
+          return of<Product[]>([]);
+        }
+
+        return forkJoin(
+          products.map((product) => {
+            return this.productImageService.getProductImages(product.id).pipe(
+              map((images) => ({
+                ...product,
+                productImage: images,
+              })),
+              catchError(() =>
+                of({
+                  ...product,
+                  productImage: [],
+                }),
               ),
-            ),
-      ),
+            );
+          }),
+        );
+      }),
+
     );
+  }
+
+  getActiveProducts(): Observable<Product[]> {
+    if (this.activeProductsRequest) {
+      return this.activeProductsRequest;
+    }
+
+    const productsSource =
+      environment.productDataSource === 'supabase'
+        ? this.supabaseCatalogService.getProducts(true)
+        : this.httpClient.get<Product[]>(`${this.apiUrl}/product/active`).pipe(
+            switchMap((products) =>
+              products.length === 0
+                ? of([])
+                : forkJoin(
+                    products.map((product) =>
+                      this.productImageService.getProductImages(product.id).pipe(
+                        map((images) => ({
+                          ...product,
+                          productImage: images,
+                        })),
+                      ),
+                    ),
+                  ),
+            ),
+          );
+
+    this.activeProductsRequest = productsSource.pipe(
+      map((products) => products.map((product) => this.parseProductOptions(product))),
+      tap(() => this.productsLoaded.set(true)),
+      catchError((error) => {
+        this.activeProductsRequest = undefined;
+        this.productsLoaded.set(false);
+        return throwError(() => error);
+      }),
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
+
+    return this.activeProductsRequest;
   }
 
   private parseProductOptions(product: Product): Product {
@@ -133,7 +165,13 @@ export class ProductsService {
 
   private invalidateProductsCache(): void {
     this.productsRequest = undefined;
+    this.activeProductsRequest = undefined;
     this.productsLoaded.set(false);
+  }
+
+  refreshProducts(): Observable<Product[]> {
+    this.invalidateProductsCache();
+    return this.getProducts();
   }
 
   private authenticatedRequestOptions(): {

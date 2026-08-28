@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environment';
 import { Observable } from 'rxjs';
 import { Category } from '../../interfaces/Category';
+import { SupabaseCatalogService } from '../supabase_api/supabase-catalog.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,8 +11,13 @@ import { Category } from '../../interfaces/Category';
 export class CategoryService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}`;
+  private supabaseCatalogService = inject(SupabaseCatalogService);
 
   getCategories = (): Observable<Category[]> => {
+    if (environment.productDataSource === 'supabase') {
+      return this.supabaseCatalogService.getCategories();
+    }
+
     return this.http.get<Category[]>(`${this.apiUrl}/category`);
   };
 

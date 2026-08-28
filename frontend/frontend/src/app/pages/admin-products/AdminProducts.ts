@@ -4,7 +4,7 @@ import { Component, computed, DestroyRef, inject, OnInit, PLATFORM_ID, signal } 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { finalize, forkJoin, of, switchMap } from 'rxjs';
+import { concatMap, finalize, forkJoin, from, of, switchMap, toArray } from 'rxjs';
 import { CategoryService } from '../../core/api/category_api/category.service';
 import {
   ProductCreateRequest,
@@ -13,6 +13,7 @@ import {
 import { ProductImageService } from '../../core/api/supabase_api/product_image.service';
 import { Category } from '../../core/interfaces/Category';
 import { Product } from '../../core/interfaces/Product';
+import { ProductImage } from '../../core/interfaces/ProductImage';
 import { UserService } from '../../core/api/user_api/user.service';
 
 interface SelectedImage {
@@ -57,6 +58,8 @@ export class AdminProductsPage implements OnInit {
   protected readonly selectedImages = signal<SelectedImage[]>([]);
   protected readonly imageSelectionError = signal<string | null>(null);
   protected readonly addingVariant = signal(false);
+  protected readonly deletingVariants = signal(false);
+  protected readonly deletingImageId = signal<string | null>(null);
   protected readonly variantMessage = signal<string | null>(null);
   protected readonly variantError = signal<string | null>(null);
   protected readonly productGroups = computed<ProductGroup[]>(() => {
@@ -241,6 +244,74 @@ export class AdminProductsPage implements OnInit {
     this.addVariants(requests, `Color ${color} was added for ${requests.length} sizes.`);
   }
 
+  protected deleteSize(group: ProductGroup, size: string): void {
+    const variants = group.variants.filter((variant) => variant.size === size);
+    this.deleteVariants(
+      group,
+      variants,
+      `Delete size ${size} from “${group.name}”? This will permanently delete ${variants.length} variant${variants.length === 1 ? '' : 's'}.`,
+      `Size ${size} and ${variants.length} variant${variants.length === 1 ? '' : 's'} were deleted.`,
+    );
+  }
+
+  protected deleteColor(group: ProductGroup, color: string): void {
+    const normalizedColor = color.toUpperCase();
+    const variants = group.variants.filter(
+      (variant) => variant.color?.toUpperCase() === normalizedColor,
+    );
+    this.deleteVariants(
+      group,
+      variants,
+      `Delete color ${normalizedColor} from “${group.name}”? This will permanently delete ${variants.length} variant${variants.length === 1 ? '' : 's'}.`,
+      `Color ${normalizedColor} and ${variants.length} variant${variants.length === 1 ? '' : 's'} were deleted.`,
+    );
+  }
+
+  protected deleteWholeProduct(group: ProductGroup): void {
+    this.deleteVariants(
+      group,
+      group.variants,
+      `Delete “${group.name}” completely? All ${group.variants.length} variants and their unshared images will be permanently deleted.`,
+      `“${group.name}” and all ${group.variants.length} variants were deleted.`,
+    );
+  }
+
+  protected deleteImage(product: Product, image: ProductImage): void {
+    if (
+      this.deletingImageId() ||
+      !window.confirm(
+        `Delete this image from “${product.name}”? If it is shared, it will also be removed from the other variants.`,
+      )
+    ) {
+      return;
+    }
+
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
+    this.deletingImageId.set(image.id);
+
+    this.productImageService
+      .deletePicture(image.id)
+      .pipe(
+        switchMap(() => this.productsService.refreshProducts()),
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.deletingImageId.set(null)),
+      )
+      .subscribe({
+        next: (products) => {
+          this.products.set(products);
+          const refreshedProduct = products.find((item) => item.id === product.id);
+          if (refreshedProduct) {
+            this.editProduct(refreshedProduct);
+          }
+          this.successMessage.set('The product image was deleted.');
+        },
+        error: (error: HttpErrorResponse) => {
+          this.errorMessage.set(this.getImageDeleteErrorMessage(error));
+        },
+      });
+  }
+
   protected saveProduct(): void {
     const currentProduct = this.selectedProduct();
     this.errorMessage.set(null);
@@ -384,6 +455,53 @@ export class AdminProductsPage implements OnInit {
       });
   }
 
+  private deleteVariants(
+    group: ProductGroup,
+    variants: Product[],
+    confirmationMessage: string,
+    successMessage: string,
+  ): void {
+    if (this.deletingVariants() || variants.length === 0 || !window.confirm(confirmationMessage)) {
+      return;
+    }
+
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
+    this.variantError.set(null);
+    this.variantMessage.set(null);
+    this.deletingVariants.set(true);
+
+    from(variants)
+      .pipe(
+        concatMap((variant) => this.productsService.deleteProduct(variant.id)),
+        toArray(),
+        switchMap(() => this.productsService.getProducts()),
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.deletingVariants.set(false)),
+      )
+      .subscribe({
+        next: (products) => {
+          this.products.set(products);
+          this.selectedProduct.set(null);
+
+          const groupStillExists = products.some((product) => product.name === group.name);
+          if (groupStillExists) {
+            this.selectedGroupName.set(group.name);
+            this.variantMessage.set(successMessage);
+          } else {
+            this.selectedGroupName.set(null);
+            this.expandedGroupNames.update((names) =>
+              names.filter((name) => name !== group.name),
+            );
+            this.successMessage.set(successMessage);
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          this.variantError.set(this.getDeleteErrorMessage(error));
+        },
+      });
+  }
+
   private toVariantRequest(source: Product, size: string, color: string): ProductCreateRequest {
     return {
       name: `${source.name} [${size}]${color.toUpperCase()}@`,
@@ -444,5 +562,25 @@ export class AdminProductsPage implements OnInit {
       return error.error.message;
     }
     return 'The product could not be saved. Please try again.';
+  }
+
+  private getDeleteErrorMessage(error: HttpErrorResponse): string {
+    if (error.status === 401 || error.status === 403) {
+      return 'Your admin session is no longer authorised. Sign in again.';
+    }
+    if (typeof error.error?.message === 'string') {
+      return error.error.message;
+    }
+    return 'The selected variants could not be deleted. Refresh the page and try again.';
+  }
+
+  private getImageDeleteErrorMessage(error: HttpErrorResponse): string {
+    if (error.status === 401 || error.status === 403) {
+      return 'Your admin session is no longer authorised. Sign in again.';
+    }
+    if (typeof error.error?.message === 'string') {
+      return error.error.message;
+    }
+    return 'The image could not be deleted. Refresh the page and try again.';
   }
 }

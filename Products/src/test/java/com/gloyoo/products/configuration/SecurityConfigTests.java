@@ -9,9 +9,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SecurityConfigTests {
 
     @Test
-    void normalizesTrailingSlashInConfiguredOrigins() {
+    void allowsProductionFrontendAndNormalizesConfiguredOrigins() {
         SecurityConfig securityConfig = new SecurityConfig(null);
-        securityConfig.productionUrl = "https://products-swart-alpha.vercel.app/";
         securityConfig.configuredAllowedOrigins = " https://preview.example.com/ ";
 
         CorsConfiguration configuration = securityConfig.corsConfigurationSource()

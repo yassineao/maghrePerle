@@ -64,4 +64,17 @@ export class PopupShopPage implements OnChanges {
   protected select_size(size: string): void {
     this.currentSize.set(size);
   }
+
+  protected isColorOutOfStock(color: string): boolean {
+    return !this.products.some((product) => product.color === color && product.quantity > 0);
+  }
+
+  protected isSizeOutOfStock(size: string): boolean {
+    return !this.products.some(
+      (product) =>
+        product.size === size &&
+        (!this.currentColor() || product.color === this.currentColor()) &&
+        product.quantity > 0,
+    );
+  }
 }

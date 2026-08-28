@@ -23,7 +23,6 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Value("${app.base-url:http://localhost:8080}") String productionUrl;
     @Value("${app.cors.allowed-origins:}") String configuredAllowedOrigins;
     private final UserServiceAuthenticationFilter userServiceAuthenticationFilter;
 
@@ -105,10 +104,9 @@ public class SecurityConfig {
         List<String> allowedOrigins = new ArrayList<>(List.of(
                 "http://localhost:3000",
                 "http://localhost:4200",
-                "http://localhost:5173"
+                "http://localhost:5173",
+                "https://products-swart-alpha.vercel.app"
         ));
-
-        addAllowedOrigin(allowedOrigins, productionUrl);
 
         for (String origin : configuredAllowedOrigins.split(",")) {
             addAllowedOrigin(allowedOrigins, origin);

@@ -1,6 +1,7 @@
 <button
   type="button"
   (click)="addToCart()"
-  class="w-full rounded-full bg-moroccan-green px-4 py-3 text-sm font-bold text-ivory shadow-md transition hover:-translate-y-0.5 hover:bg-moroccan-green/90 hover:shadow-lg">
-  Add to Cart
+  [disabled]="product.quantity <= 0"
+  class="w-full rounded-full bg-moroccan-green px-4 py-3 text-sm font-bold text-ivory shadow-md transition hover:-translate-y-0.5 hover:bg-moroccan-green/90 hover:shadow-lg disabled:cursor-not-allowed disabled:bg-dark-brown/35 disabled:shadow-none disabled:hover:translate-y-0">
+  {{ product.quantity > 0 ? 'Add to Cart' : 'Out of stock' }}
 </button>

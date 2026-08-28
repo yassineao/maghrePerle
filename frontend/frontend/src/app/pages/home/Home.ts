@@ -45,7 +45,7 @@ export class HomePage {
     this.products.set(null);
     this.loadFailed.set(false);
 
-    this.productService.getProducts().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+    this.productService.getActiveProducts().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (products) => {
         this.products.set(products);
         if (isPlatformBrowser(this.platformId)) {

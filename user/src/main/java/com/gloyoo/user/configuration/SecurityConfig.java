@@ -26,7 +26,6 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Value("${app.base-url:http://localhost:8080}") String productionUrl;
     @Value("${app.cors.allowed-origins:}") String configuredAllowedOrigins;
     private final JwtAuthenticationFilter jwtAuthFilter;
 
@@ -99,7 +98,7 @@ public class SecurityConfig {
                 "http://localhost:3000",
                 "http://localhost:4200",
                 "http://localhost:5173",
-                productionUrl
+                "https://products-swart-alpha.vercel.app"
         ));
 
         for (String origin : configuredAllowedOrigins.split(",")) {

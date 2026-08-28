@@ -81,6 +81,7 @@
                 [attr.aria-pressed]="currentColor() === color"
                 [title]="color"
                 class="h-8 w-8 rounded-full ring-2 ring-offset-2 ring-offset-ivory transition hover:scale-110"
+                [class.opacity-35]="isColorOutOfStock(color)"
                 [class.ring-terracotta]="currentColor() === color"
                 [class.ring-transparent]="currentColor() !== color">
               </button>
@@ -98,6 +99,9 @@
                 class="min-w-11 rounded-full border border-warm-gold/40 bg-warm-gold/10 px-4 py-2 text-sm font-bold text-dark-brown transition hover:border-terracotta hover:bg-terracotta hover:text-ivory"
                 [class.ring-2]="currentSize() === size"
                 [class.ring-terracotta]="currentSize() === size"
+                [class.line-through]="isSizeOutOfStock(size)"
+                [class.opacity-45]="isSizeOutOfStock(size)"
+                [attr.title]="isSizeOutOfStock(size) ? 'Out of stock' : null"
                 [attr.aria-pressed]="currentSize() === size"
                 (click)="select_size(size)"
               >{{ size }}</button>

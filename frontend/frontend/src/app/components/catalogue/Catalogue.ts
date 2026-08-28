@@ -50,7 +50,7 @@ export class CataloguePage implements OnInit {
       return;
     }
 
-    this.productsService.getProducts().pipe(
+    this.productsService.getActiveProducts().pipe(
       takeUntilDestroyed(this.destroyRef)
 
     ).subscribe({
@@ -61,13 +61,17 @@ export class CataloguePage implements OnInit {
 
   protected readonly visibleProducts = computed(() => {
     const category = this.selectedCategory();
-    console.log("qxsqw",this.products());
     const productsByName = new Map<string, Product>();
 
-    for (const product of this.products()) {
+    for (const product of this.products().filter((item) => item.active)) {
       const selectedProduct = productsByName.get(product.name);
+      const selectedScore = selectedProduct
+        ? Number(selectedProduct.quantity > 0) * 2 + Number(selectedProduct.productImage.length > 0)
+        : -1;
+      const productScore =
+        Number(product.quantity > 0) * 2 + Number(product.productImage.length > 0);
 
-      if (!selectedProduct || (!selectedProduct.productImage.length && product.productImage.length)) {
+      if (!selectedProduct || productScore > selectedScore) {
         productsByName.set(product.name, product);
       }
     }

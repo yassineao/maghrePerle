@@ -15,6 +15,10 @@ export class CartButtonComponent {
   private readonly cartSession = inject(Cart_session);
 
   protected addToCart(): void {
+    if (this.product.quantity <= 0) {
+      return;
+    }
+
     this.cartSession.add_to_cart(this.product, this.color, this.size);
   }
 }

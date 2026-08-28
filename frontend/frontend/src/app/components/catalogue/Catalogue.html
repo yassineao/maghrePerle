@@ -52,6 +52,9 @@
             (click)="openPopup(product)"
           >
             <div class="relative overflow-hidden rounded-t-[4.5rem] rounded-b-xl bg-terracotta/10">
+              @if (product.quantity <= 0) {
+                <span class="absolute top-4 right-4 z-10 rounded-full bg-burgundy px-3 py-1.5 text-[10px] font-bold tracking-wider text-ivory uppercase shadow-md">Out of stock</span>
+              }
 <!--              @for (tag of product.tags; track tag) {-->
 <!--                <span-->
 <!--                  class="absolute top-4 left-4 z-10 rounded-full bg-burgundy px-3 py-1 text-[10px] font-bold tracking-wider text-ivory uppercase">{{ tag }}</span>-->

@@ -23,7 +23,7 @@ export class Navbar implements OnInit {
     }
 
     this.productsService
-      .getProducts()
+      .getActiveProducts()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({ error: () => undefined });
   }
