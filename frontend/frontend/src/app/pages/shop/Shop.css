@@ -1,0 +1,49 @@
+.shop-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.shop-hero::before {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  background-image: url('/bg.jpg');
+  background-position: center 8%;
+  background-size: cover;
+  filter: saturate(0.62) contrast(1.08) brightness(0.42);
+  transform: scale(1.02);
+}
+
+.shop-hero::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  background: radial-gradient(circle at center, rgba(33, 20, 22, 0.38), rgba(33, 20, 22, 0.76));
+}
+
+.shop-hero__content {
+  position: relative;
+  text-align: center;
+  padding: 1.25rem 1rem;
+  border-radius: 1.2rem;
+  background: rgba(33, 20, 22, 0.56);
+  box-shadow: 0 18px 50px rgba(15, 8, 11, 0.22);
+  backdrop-filter: blur(3px);
+  text-shadow: 0 2px 12px rgba(15, 8, 11, 0.55);
+}
+
+.shop-hero__title {
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 640px) {
+  .shop-hero__content {
+    padding: 1.5rem 2rem;
+  }
+}

@@ -1,9 +1,9 @@
 @if (selectedProduct(); as product) {
-<div class="bg-ivory  text-dark-brown sm:py-4 ">
-  <div class="mx-auto max-w-6xl px-1 sm:px-3 lg:px-5">
-    <div class="flex flex-col gap-8 md:flex-row md:items-start lg:gap-12">
+<div class="bg-ivory text-dark-brown sm:py-4">
+  <div class="mx-auto max-w-6xl sm:px-3 lg:px-5">
+    <div class="flex flex-col gap-6 md:flex-row md:items-start md:gap-8 lg:gap-12">
       <div class="min-w-0 md:flex-1">
-        <div class="mb-3 h-[320px] overflow-hidden rounded-[2rem] bg-terracotta/10 shadow-lg sm:h-[420px] lg:h-[500px]">
+        <div class="mb-3 h-[min(54vh,360px)] overflow-hidden rounded-[1.5rem] bg-terracotta/10 shadow-lg sm:h-[420px] sm:rounded-[2rem] lg:h-[500px]">
           @if (selectedImage(); as image) {
             <img
               class="h-full w-full object-cover transition duration-500 hover:scale-105" [src]="image.signedUrl"
@@ -14,14 +14,14 @@
           }
 
         </div>
-        <div class="mb-5 flex snap-x gap-3 overflow-x-auto pb-3">
+        <div class="mb-4 flex snap-x gap-2 overflow-x-auto pb-2 sm:mb-5 sm:gap-3 sm:pb-3">
           @for (productImage of product.productImage; track productImage.id) {
             <button
               type="button"
-              class="h-20 w-20 flex-none cursor-pointer snap-start overflow-hidden rounded-xl border-2 shadow-sm transition hover:border-terracotta sm:h-24 sm:w-24"
+              class="h-16 w-16 flex-none cursor-pointer snap-start overflow-hidden rounded-xl border-2 shadow-sm transition hover:border-terracotta sm:h-24 sm:w-24"
               [class.border-terracotta]="selectedImage()?.id === productImage.id"
               [class.border-transparent]="selectedImage()?.id !== productImage.id"
-              [attr.aria-label]="'Show ' + (productImage.altText || product.name)"
+              [attr.aria-label]="'Afficher ' + (productImage.altText || product.name)"
               [attr.aria-pressed]="selectedImage()?.id === productImage.id"
               (click)="selectImage(productImage)"
             >
@@ -36,82 +36,83 @@
           }
         </div>
 
-        <div class="mb-2 flex gap-3">
+        <div class="mb-2 flex flex-col gap-3 min-[390px]:flex-row">
           <div class="flex-1">
             <cart-button [product]="product" [color]="currentColor()" [size]="currentSize()" />
           </div>
           <div class="flex-1">
             <button
-              class="w-full rounded-full border border-warm-gold/50 bg-transparent px-4 py-3 text-sm font-bold text-moroccan-green transition hover:-translate-y-0.5 hover:border-warm-gold hover:bg-warm-gold/10">
-              Add to Wishlist
+              type="button"
+              class="min-h-12 w-full rounded-full border border-warm-gold/50 bg-transparent px-4 py-3 text-sm font-bold text-moroccan-green transition hover:-translate-y-0.5 hover:border-warm-gold hover:bg-warm-gold/10">
+              Ajouter aux favoris
             </button>
           </div>
         </div>
       </div>
       <div class="min-w-0 md:flex-1 md:py-2">
-        <h2 class="mb-3 font-serif text-3xl font-semibold text-moroccan-green sm:text-4xl">{{ product.name }}</h2>
-        <p class="mb-6 text-sm leading-7 text-dark-brown/70">
+        <h2 class="mb-2 font-serif text-3xl leading-tight font-semibold text-moroccan-green sm:mb-3 sm:text-4xl">{{ product.name }}</h2>
+        <p class="mb-4 text-sm leading-6 text-dark-brown/70 sm:mb-6 sm:leading-7">
           {{ product.category.name }}
         </p>
-        <div class="mb-6 flex flex-wrap gap-x-8 gap-y-3 border-y border-warm-gold/30 py-4">
+        <div class="mb-5 grid grid-cols-2 gap-3 border-y border-warm-gold/30 py-4 sm:mb-6 sm:flex sm:flex-wrap sm:gap-x-8 sm:gap-y-3">
           <div class="flex flex-col gap-1">
-            <span class="text-xs font-bold tracking-wider text-terracotta uppercase">Price</span>
-            <span class="font-serif text-xl font-semibold text-moroccan-green">$ {{ product.price }}</span>
+            <span class="text-xs font-bold tracking-wider text-terracotta uppercase">Prix</span>
+            <span class="font-serif text-xl font-semibold text-moroccan-green">{{ product.price.toFixed(2) }} €</span>
           </div>
           <div class="flex flex-col gap-1">
-            <span class="text-xs font-bold tracking-wider text-terracotta uppercase">Availability</span>
+            <span class="text-xs font-bold tracking-wider text-terracotta uppercase">Disponibilité</span>
             <span class="font-semibold text-moroccan-green">
             @if (product.quantity > 0) {
-              Available
+              Disponible
             } @else {
-              Out of Stock
+              Épuisé
             }
             </span>
           </div>
         </div>
-        <div class="mb-6">
-          <span class="text-sm font-bold text-dark-brown">Select Color:</span>
-          <div class="mt-3 flex items-center gap-3">
+        <div class="mb-5 sm:mb-6">
+          <span class="text-sm font-bold text-dark-brown">Choisir une couleur :</span>
+          <div class="mt-3 flex flex-wrap items-center gap-4">
             @for (color of colors(); track color) {
               <button
                 type="button"
                 (click)="select_color(color)"
                 [style.backgroundColor]="color"
-                [attr.aria-label]="'Select ' + color + ' color'"
+                [attr.aria-label]="'Choisir la couleur ' + color"
                 [attr.aria-pressed]="currentColor() === color"
                 [title]="color"
-                class="h-8 w-8 rounded-full ring-2 ring-offset-2 ring-offset-ivory transition hover:scale-110"
+                class="h-9 w-9 cursor-pointer rounded-full ring-2 ring-offset-2 ring-offset-ivory transition hover:scale-110"
                 [class.opacity-35]="isColorOutOfStock(color)"
                 [class.ring-terracotta]="currentColor() === color"
                 [class.ring-transparent]="currentColor() !== color">
               </button>
             } @empty {
-              <span class="text-sm text-dark-brown/55">No color options available</span>
+              <span class="text-sm text-dark-brown/55">Aucune couleur disponible</span>
             }
           </div>
         </div>
-        <div class="mb-6">
-          <span class="text-sm font-bold text-dark-brown">Select Size:</span>
+        <div class="mb-5 sm:mb-6">
+          <span class="text-sm font-bold text-dark-brown">Choisir une taille :</span>
           <div class="mt-3 flex flex-wrap items-center gap-2">
             @for (size of sizes(); track size) {
               <button
                 type="button"
-                class="min-w-11 rounded-full border border-warm-gold/40 bg-warm-gold/10 px-4 py-2 text-sm font-bold text-dark-brown transition hover:border-terracotta hover:bg-terracotta hover:text-ivory"
+                class="min-h-11 min-w-11 cursor-pointer rounded-full border border-warm-gold/40 bg-warm-gold/10 px-4 py-2 text-sm font-bold text-dark-brown transition hover:border-terracotta hover:bg-terracotta hover:text-ivory"
                 [class.ring-2]="currentSize() === size"
                 [class.ring-terracotta]="currentSize() === size"
                 [class.line-through]="isSizeOutOfStock(size)"
                 [class.opacity-45]="isSizeOutOfStock(size)"
-                [attr.title]="isSizeOutOfStock(size) ? 'Out of stock' : null"
+                [attr.title]="isSizeOutOfStock(size) ? 'Épuisé' : null"
                 [attr.aria-pressed]="currentSize() === size"
                 (click)="select_size(size)"
               >{{ size }}</button>
             } @empty {
-              <span class="text-sm text-dark-brown/55">No size options available</span>
+              <span class="text-sm text-dark-brown/55">Aucune taille disponible</span>
             }
           </div>
         </div>
         <div>
-          <span class="text-sm font-bold text-dark-brown">Product Description:</span>
+          <span class="text-sm font-bold text-dark-brown">Description du produit :</span>
           <p class="mt-3 text-sm leading-7 text-dark-brown/70">
             {{ product.description }}
           </p>

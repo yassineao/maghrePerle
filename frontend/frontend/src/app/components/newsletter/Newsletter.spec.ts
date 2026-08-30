@@ -10,16 +10,10 @@ describe('NewsletterComponent', () => {
     fixture.detectChanges();
   });
 
-  it('shows a confirmation after a valid subscription', () => {
-    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
-    const form = fixture.nativeElement.querySelector('form') as HTMLFormElement;
+  it('links to the MaghrePerle Instagram profile', () => {
+    const link = fixture.nativeElement.querySelector('a') as HTMLAnchorElement;
 
-    input.value = 'hello@example.com';
-    input.dispatchEvent(new Event('input'));
-    form.dispatchEvent(new Event('submit'));
-    fixture.detectChanges();
-
-    expect(fixture.nativeElement.textContent).toContain('Welcome to the Maison');
-    expect(fixture.nativeElement.textContent).toContain('hello@example.com');
+    expect(link.href).toBe('https://www.instagram.com/maghreperle.boutique/');
+    expect(link.textContent).toContain('Instagram');
   });
 });

@@ -17,13 +17,13 @@ describe('HeroCarousselComponent', () => {
   afterEach(() => fixture.destroy());
 
   it('moves to the next slide with the carousel control', () => {
-    const nextButton = fixture.nativeElement.querySelector('[aria-label="Next slide"]') as HTMLButtonElement;
+    const nextButton = fixture.nativeElement.querySelector('[aria-label="Diapositive suivante"]') as HTMLButtonElement;
 
-    expect(fixture.nativeElement.querySelector('[aria-current="true"]').getAttribute('aria-label')).toContain('slide 1');
+    expect(fixture.nativeElement.querySelector('[aria-current="true"]').getAttribute('aria-label')).toContain('diapositive 1');
     nextButton.click();
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('[aria-current="true"]').getAttribute('aria-label')).toContain('slide 2');
+    expect(fixture.nativeElement.querySelector('[aria-current="true"]').getAttribute('aria-label')).toContain('diapositive 2');
   });
 
   it('supports keyboard navigation', () => {
@@ -31,6 +31,6 @@ describe('HeroCarousselComponent', () => {
     carousel.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' }));
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('[aria-current="true"]').getAttribute('aria-label')).toContain('slide 3');
+    expect(fixture.nativeElement.querySelector('[aria-current="true"]').getAttribute('aria-label')).toContain('diapositive 3');
   });
 });

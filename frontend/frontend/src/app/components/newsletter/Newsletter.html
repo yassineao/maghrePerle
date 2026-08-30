@@ -1,31 +1,10 @@
 <section class="bg-terracotta px-5 py-20 text-ivory sm:px-8">
-  <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1fr_0.9fr]">
+  <div class="mx-auto grid max-w-6xl items-center gap-8 lg:grid-cols-[1fr_auto]">
     <div>
-      <p class="text-xs font-bold tracking-[0.24em] text-dark-brown uppercase">Letters from the Maison</p>
-      <h2 class="mt-4 max-w-2xl font-serif text-4xl font-semibold sm:text-5xl">New collections, artisan stories and private offers.</h2>
-      <p class="mt-4 max-w-xl leading-7 text-ivory/75">Join our journal and receive 15% off your first Maison Atlas order.</p>
+      <p class="text-xs font-bold tracking-[0.24em] text-dark-brown uppercase">MaghrePerle sur Instagram</p>
+      <h2 class="mt-4 max-w-2xl font-serif text-4xl font-semibold sm:text-5xl">Ne manquez aucun nouveau modèle.</h2>
+      <p class="mt-4 max-w-xl leading-7 text-ivory/80">Suivez &#64;maghreperle.boutique pour découvrir nos publications et nous écrire directement.</p>
     </div>
-
-    @if (submitted()) {
-      <div class="rounded-2xl border border-ivory/30 bg-ivory/10 p-7 backdrop-blur" role="status">
-        <p class="font-serif text-2xl font-semibold">Welcome to the Maison.</p>
-        <p class="mt-2 text-sm text-ivory/75">Your private welcome offer is on its way to {{ email() }}.</p>
-      </div>
-    } @else {
-      <form class="rounded-2xl border border-ivory/30 bg-dark-brown/10 p-3 backdrop-blur sm:flex" (submit)="subscribe($event)">
-        <label class="sr-only" for="newsletter-email">Email address</label>
-        <input
-          id="newsletter-email"
-          class="min-w-0 flex-1 border-0 bg-transparent px-4 py-3 text-ivory outline-none placeholder:text-ivory/55"
-          type="email"
-          autocomplete="email"
-          placeholder="Your email address"
-          required
-          [value]="email()"
-          (input)="email.set($any($event.target).value)"
-        />
-        <button class="mt-2 w-full cursor-pointer rounded-xl bg-moroccan-green px-6 py-3 text-sm font-bold text-ivory transition hover:bg-burgundy sm:mt-0 sm:w-auto" type="submit">Join the journal</button>
-      </form>
-    }
+    <a class="inline-flex min-h-12 items-center justify-center rounded-full bg-moroccan-green px-7 py-3.5 text-sm font-bold text-ivory no-underline transition hover:-translate-y-0.5 hover:bg-burgundy" href="https://www.instagram.com/maghreperle.boutique/" target="_blank" rel="noopener noreferrer">Suivre sur Instagram</a>
   </div>
 </section>

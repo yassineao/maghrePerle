@@ -17,6 +17,7 @@ const ALL_CATEGORY: Category = {
 @Component({
   selector: 'app-shop-page',
   templateUrl: './Shop.html',
+  styleUrl: './Shop.css',
   imports: [CataloguePage],
 })
 export class ShopPage {}

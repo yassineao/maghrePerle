@@ -1,19 +1,19 @@
 <nav
   class="fixed inset-x-0 top-0 z-[100] border-b border-warm-gold/30 bg-moroccan-green/45 font-sans text-ivory shadow-lg shadow-dark-brown/10 backdrop-blur-xl"
-  aria-label="Main navigation"
+  aria-label="Navigation principale"
 >
   <div class="w-full bg-warm-gold px-4 py-2 text-center text-xs font-semibold tracking-wide text-ivory sm:text-sm">
-    <p>Complimentary delivery on orders over $50 · 20% off your first purchase</p>
+    <p>L’élégance marocaine au féminin · Commandes en DM sur Instagram</p>
   </div>
   <div class="relative mx-auto flex min-h-[68px] w-full max-w-7xl items-center justify-between px-4 py-3 md:px-6">
     <a
       class="flex items-center gap-3 text-lg font-bold tracking-tight text-ivory no-underline focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-warm-gold"
       routerLink="/"
-      aria-label="Maison Atlas home"
+      aria-label="Accueil MaghrePerle"
       (click)="closeMenu()"
     >
       <img class="size-[40px] " src="/favicon.ico" alt="" />
-      <span class="max-[420px]:hidden">Maghre Perle</span>
+      <span class="max-[420px]:hidden">MaghrePerle</span>
     </a>
 
     <div class="flex items-center gap-2.5">
@@ -28,14 +28,14 @@
         [attr.tabindex]="productsLoaded() ? null : -1"
         (click)="closeMenu()"
       >
-        {{ productsLoaded() ? 'Shop now' : 'Loading shop…' }}
+        {{ productsLoaded() ? 'Découvrir' : 'Chargement…' }}
       </a>
       <button
         class="grid size-[42px] cursor-pointer place-items-center rounded-full border border-warm-gold/40 bg-ivory/10 p-0 text-ivory hover:bg-ivory/20 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-warm-gold md:hidden"
         type="button"
         aria-controls="navbar-menu"
         [attr.aria-expanded]="menuOpen()"
-        [attr.aria-label]="menuOpen() ? 'Close main menu' : 'Open main menu'"
+        [attr.aria-label]="menuOpen() ? 'Fermer le menu principal' : 'Ouvrir le menu principal'"
         (click)="toggleMenu()"
       >
         @if (menuOpen()) {
@@ -69,7 +69,7 @@
             [routerLinkActiveOptions]="{ exact: true }"
             ariaCurrentWhenActive="page"
             (click)="closeMenu()"
-          >Home</a>
+          >Accueil</a>
         </li>
         <li>
           <a
@@ -78,7 +78,7 @@
             routerLinkActive="bg-warm-gold/20 text-ivory"
             ariaCurrentWhenActive="page"
             (click)="closeMenu()"
-          >About</a>
+          >À propos</a>
         </li>
         <li>
           <a
@@ -92,7 +92,7 @@
             [attr.aria-disabled]="!productsLoaded()"
             [attr.tabindex]="productsLoaded() ? null : -1"
             (click)="closeMenu()"
-          >{{ productsLoaded() ? 'Shop' : 'Shop (loading…)' }}</a>
+          >{{ productsLoaded() ? 'Boutique' : 'Boutique (chargement…)' }}</a>
         </li>
         <li>
           <a

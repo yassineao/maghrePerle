@@ -10,14 +10,15 @@ import { Product } from '../../core/interfaces/Product';
 
 const ALL_CATEGORY: Category = {
   id: '0',
-  name: 'All',
-  description: 'All',
+  name: 'Tous',
+  description: 'Toutes les catégories',
   active: true,
 };
 
 @Component({
   selector: 'Catalogue',
   templateUrl: './Catalogue.html',
+  styleUrl: './Catalogue.css',
   imports: [PopupShopPage],
 })
 export class CataloguePage implements OnInit {
@@ -35,7 +36,7 @@ export class CataloguePage implements OnInit {
       : of([ALL_CATEGORY])),
     { initialValue: [ALL_CATEGORY] },
   );
-  protected readonly selectedCategory = signal('All');
+  protected readonly selectedCategory = signal('Tous');
   private readonly destroyRef = inject(DestroyRef);
   private readonly productsService = inject(ProductsService);
   protected readonly products = signal<Product[]>([]);
@@ -78,14 +79,11 @@ export class CataloguePage implements OnInit {
 
     const products = [...productsByName.values()];
     const newProducts =
-      category === 'All'
+      category === 'Tous'
         ? products
         : products.filter((product) => product.category.name === category);
 
-    return !this.CompoOrPage?
-      newProducts
-      : newProducts.slice(0,4)
-      ;
+    return this.CompoOrPage ? newProducts : newProducts.slice(0, 4);
   });
 
 

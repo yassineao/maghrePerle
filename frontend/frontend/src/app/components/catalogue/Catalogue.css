@@ -1,0 +1,36 @@
+.catalogue-scroll,
+.product-detail-scroll {
+  scrollbar-color: color-mix(in srgb, var(--color-warm-gold) 72%, transparent) transparent;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.catalogue-scroll::-webkit-scrollbar {
+  height: 5px;
+}
+
+.product-detail-scroll::-webkit-scrollbar {
+  width: 7px;
+}
+
+.catalogue-scroll::-webkit-scrollbar-track,
+.product-detail-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.catalogue-scroll::-webkit-scrollbar-thumb,
+.product-detail-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-warm-gold) 72%, transparent);
+}
+
+.catalogue-scroll::-webkit-scrollbar-thumb:hover,
+.product-detail-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--color-warm-gold);
+}
+
+@media (min-width: 640px) {
+  .product-detail-scroll {
+    scrollbar-gutter: stable;
+  }
+}

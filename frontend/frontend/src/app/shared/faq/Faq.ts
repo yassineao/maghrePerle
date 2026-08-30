@@ -8,20 +8,20 @@ export class FaqComponent {
   protected readonly openIndex = signal<number | null>(0);
   protected readonly faqs = [
     {
-      question: 'Where are your pieces made?',
-      answer: 'Our collections are developed with independent makers and specialist workshops, with an emphasis on skilled handwork and responsible production.',
+      question: 'Comment passer commande ?',
+      answer: 'Choisissez le modèle qui vous plaît puis envoyez un message privé à @maghreperle.boutique sur Instagram.',
     },
     {
-      question: 'Do you ship internationally?',
-      answer: 'Yes. We ship worldwide with tracked delivery. Timing and duties vary by destination and are shown clearly at checkout.',
+      question: 'Où découvrir les nouveautés ?',
+      answer: 'Les nouveaux modèles et les inspirations MaghrePerle sont présentés directement sur notre profil Instagram.',
     },
     {
-      question: 'How should I care for handcrafted pieces?',
-      answer: 'Each piece includes individual care guidance. In general, gentle cleaning, cool water and natural drying best preserve colour and texture.',
+      question: 'Comment connaître les tailles et disponibilités ?',
+      answer: 'Écrivez-nous en message privé avec le modèle souhaité pour obtenir les informations disponibles.',
     },
     {
-      question: 'Can I return an order?',
-      answer: 'Unworn items can be returned within 30 days of delivery. Limited artisan pieces must be returned with their original packaging and tags.',
+      question: 'Comment contacter MaghrePerle ?',
+      answer: 'Retrouvez-nous sur Instagram à @maghreperle.boutique et contactez-nous directement en DM.',
     },
   ];
 

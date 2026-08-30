@@ -1,34 +1,20 @@
-<section class="bg-ivory px-5 py-20 text-dark-brown sm:px-8 lg:py-28">
-  <div class="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
+<section class="relative overflow-hidden bg-ivory px-5 py-24 text-dark-brown sm:px-8 lg:py-32">
+  <div class="absolute -top-24 -right-24 size-80 rounded-full bg-terracotta/15 blur-3xl" aria-hidden="true"></div>
+  <div class="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
     <div>
-      <p class="text-xs font-bold tracking-[0.24em] text-burgundy uppercase">Contact the Maison</p>
-      <h1 class="mt-4 font-serif text-5xl font-semibold text-moroccan-green sm:text-6xl">We would love to hear from you.</h1>
-      <p class="mt-6 max-w-md leading-8 text-dark-brown/65">Questions about sizing, an order or our makers? Our team replies within one business day.</p>
-
-      <div class="mt-10 space-y-7 border-l-2 border-warm-gold pl-6">
-        <div><p class="text-xs font-bold tracking-wider text-terracotta uppercase">Email</p><a class="mt-1 block font-serif text-xl text-dark-brown" href="mailto:hello@maisonatlas.com">hello&#64;maisonatlas.com</a></div>
-        <div><p class="text-xs font-bold tracking-wider text-terracotta uppercase">Visit</p><p class="mt-1 font-serif text-xl">18 Rue des Artisans, Marrakech</p></div>
-        <div><p class="text-xs font-bold tracking-wider text-terracotta uppercase">Opening hours</p><p class="mt-1 font-serif text-xl">Monday–Saturday, 10:00–19:00</p></div>
-      </div>
+      <p class="text-xs font-bold tracking-[0.24em] text-burgundy uppercase">Contacter MaghrePerle</p>
+      <h1 class="mt-4 font-serif text-5xl font-semibold text-moroccan-green sm:text-6xl">Votre modèle vous attend.</h1>
+      <p class="mt-6 max-w-lg leading-8 text-dark-brown/65">Pour connaître les disponibilités ou passer commande, contactez directement &#64;maghreperle.boutique par message privé sur Instagram.</p>
+      <a class="mt-8 inline-flex min-h-12 items-center justify-center rounded-full bg-moroccan-green px-7 py-3.5 text-sm font-bold text-ivory no-underline transition hover:-translate-y-0.5 hover:bg-burgundy" href="https://www.instagram.com/maghreperle.boutique/" target="_blank" rel="noopener noreferrer">Envoyer un DM sur Instagram</a>
     </div>
 
-    @if (sent()) {
-      <div class="flex min-h-[430px] flex-col items-center justify-center rounded-t-[8rem] rounded-b-2xl bg-moroccan-green p-10 text-center text-ivory" role="status">
-        <span class="grid size-16 place-items-center rounded-full border border-warm-gold text-3xl text-warm-gold">✓</span>
-        <h2 class="mt-6 font-serif text-3xl font-semibold">Your message is with us.</h2>
-        <p class="mt-3 max-w-sm text-ivory/70">Thank you for reaching out. A member of our team will respond shortly.</p>
-      </div>
-    } @else {
-      <form class="rounded-2xl border border-warm-gold/30 bg-white/45 p-7 shadow-xl shadow-dark-brown/5 sm:p-10" (submit)="send($event)">
-        <div class="grid gap-6 sm:grid-cols-2">
-          <label class="text-sm font-semibold">First name<input class="mt-2 w-full rounded-xl border border-warm-gold/40 bg-ivory px-4 py-3 outline-none focus:border-moroccan-green" name="firstName" required /></label>
-          <label class="text-sm font-semibold">Last name<input class="mt-2 w-full rounded-xl border border-warm-gold/40 bg-ivory px-4 py-3 outline-none focus:border-moroccan-green" name="lastName" required /></label>
-        </div>
-        <label class="mt-6 block text-sm font-semibold">Email<input class="mt-2 w-full rounded-xl border border-warm-gold/40 bg-ivory px-4 py-3 outline-none focus:border-moroccan-green" type="email" name="email" required /></label>
-        <label class="mt-6 block text-sm font-semibold">How can we help?<select class="mt-2 w-full rounded-xl border border-warm-gold/40 bg-ivory px-4 py-3 outline-none focus:border-moroccan-green" name="topic"><option>Order question</option><option>Sizing and fit</option><option>Returns</option><option>Wholesale</option><option>Something else</option></select></label>
-        <label class="mt-6 block text-sm font-semibold">Message<textarea class="mt-2 min-h-36 w-full resize-y rounded-xl border border-warm-gold/40 bg-ivory px-4 py-3 outline-none focus:border-moroccan-green" name="message" required></textarea></label>
-        <button class="mt-7 w-full cursor-pointer rounded-full bg-moroccan-green px-6 py-3.5 text-sm font-bold text-ivory transition hover:bg-burgundy" type="submit">Send message</button>
-      </form>
-    }
+    <div class="rounded-t-[7rem] rounded-b-3xl bg-moroccan-green p-8 text-ivory shadow-2xl shadow-dark-brown/15 sm:p-12">
+      <p class="text-xs font-bold tracking-[0.2em] text-warm-gold uppercase">Comment commander</p>
+      <ol class="mt-8 space-y-7">
+        <li class="flex gap-5"><span class="font-serif text-3xl text-warm-gold">01</span><div><h2 class="font-serif text-xl font-semibold">Découvrez les modèles</h2><p class="mt-1 text-sm leading-6 text-ivory/65">Parcourez les publications MaghrePerle sur Instagram.</p></div></li>
+        <li class="flex gap-5"><span class="font-serif text-3xl text-warm-gold">02</span><div><h2 class="font-serif text-xl font-semibold">Choisissez votre pièce</h2><p class="mt-1 text-sm leading-6 text-ivory/65">Repérez le caftan ou la djellaba qui vous plaît.</p></div></li>
+        <li class="flex gap-5"><span class="font-serif text-3xl text-warm-gold">03</span><div><h2 class="font-serif text-xl font-semibold">Écrivez-nous en DM</h2><p class="mt-1 text-sm leading-6 text-ivory/65">Envoyez le modèle choisi pour demander les informations disponibles.</p></div></li>
+      </ol>
+    </div>
   </div>
 </section>

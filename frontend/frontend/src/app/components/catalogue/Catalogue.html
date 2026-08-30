@@ -1,20 +1,25 @@
-<section class="bg-ivory px-5 py-20 text-dark-brown sm:px-8">
-  <div class="mx-auto max-w-6xl">
+<section class="bg-ivory px-4 py-10 text-dark-brown sm:px-8 sm:py-16">
+  <div class="mx-auto max-w-7xl">
 
 
     @if(CompoOrPage){
-      <div
-        class="mb-12 flex flex-col gap-6 border-b border-warm-gold/30 pb-6 sm:flex-row sm:items-center sm:justify-between">
-        <p class="font-serif text-2xl font-semibold text-moroccan-green">Shop all</p>
-        <div class="flex flex-wrap gap-2" aria-label="Filter products by category">
+      <div class="mb-8 sm:mb-10">
+        <div class="flex items-end justify-between gap-4">
+          <div>
+            <p class="text-[11px] font-bold tracking-[0.2em] text-terracotta uppercase">La collection</p>
+            <h2 class="mt-1 font-serif text-3xl leading-tight font-semibold text-moroccan-green sm:text-4xl">Tout découvrir</h2>
+          </div>
+          <p class="pb-1 text-sm text-dark-brown/50">{{ visibleProducts().length }} pièces</p>
+        </div>
+        <div class="catalogue-scroll -mx-4 mt-6 flex snap-x gap-2 overflow-x-auto border-y border-warm-gold/20 px-4 py-3 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0" aria-label="Filtrer les produits par catégorie">
           @for (category of categories(); track category.id) {
             <button
-              class="cursor-pointer rounded-full border px-4 py-2 text-sm font-semibold transition"
+              class="min-h-10 flex-none cursor-pointer snap-start rounded-full border px-4 py-2 text-sm font-semibold transition-colors"
               [class.border-moroccan-green]="selectedCategory() === category.name"
               [class.bg-moroccan-green]="selectedCategory() === category.name"
               [class.text-ivory]="selectedCategory() === category.name"
-              [class.border-warm-gold]="selectedCategory() !== category.name"
-              [class.bg-transparent]="selectedCategory() !== category.name"
+              [class.border-transparent]="selectedCategory() !== category.name"
+              [class.bg-dark-brown/5]="selectedCategory() !== category.name"
               [class.text-dark-brown]="selectedCategory() !== category.name"
               type="button"
               (click)="selectedCategory.set(category.name)"
@@ -25,16 +30,16 @@
       </div>
     }
     @else {
-      <div class="mb-12 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+      <div class="mb-8 flex flex-col justify-between gap-5 sm:mb-10 sm:flex-row sm:items-end">
         <div>
           <div class="mb-4 flex items-center gap-3">
             <span class="h-px w-10 bg-warm-gold"></span>
-            <span class="text-xs font-bold tracking-[0.24em] text-burgundy uppercase">Just arrived</span>
+            <span class="text-xs font-bold tracking-[0.24em] text-burgundy uppercase">Tout juste arrivés</span>
           </div>
-          <h2 class="font-serif text-4xl font-semibold text-moroccan-green sm:text-5xl">The latest edit</h2>
-          <p class="mt-3 text-dark-brown/65">Considered pieces inspired by the colours and craft of Morocco.</p>
+          <h2 class="font-serif text-4xl font-semibold text-moroccan-green sm:text-5xl">La dernière sélection</h2>
+          <p class="mt-3 text-dark-brown/65">Découvrez les dernières pièces présentées par MaghrePerle.</p>
         </div>
-        <a href="#" class="text-sm font-bold text-moroccan-green underline decoration-warm-gold decoration-2 underline-offset-8">View all pieces</a>
+        <a href="/shop" class="text-sm font-bold text-moroccan-green underline decoration-warm-gold decoration-2 underline-offset-8">Voir toutes les pièces</a>
       </div>
     }
 
@@ -42,18 +47,18 @@
 <!--    <span class="absolute top-4 left-4 z-10 rounded-full bg-burgundy px-3 py-1 text-[11px] font-bold tracking-wider text-ivory uppercase">New</span>-->
 
 
-    <div class="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 sm:gap-y-12 lg:grid-cols-3">
       @for (product of visibleProducts(); track product.id) {
-        <article class="group">
+        <article class="group min-w-0">
           <button
             type="button"
-            class="block w-full cursor-pointer text-left text-dark-brown"
-            [attr.aria-label]="'View ' + product.name"
+            class="block w-full cursor-pointer rounded-2xl text-left text-dark-brown outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-4 focus-visible:ring-offset-ivory"
+            [attr.aria-label]="'Voir ' + product.name"
             (click)="openPopup(product)"
           >
-            <div class="relative overflow-hidden rounded-t-[4.5rem] rounded-b-xl bg-terracotta/10">
+            <div class="relative aspect-[4/5] overflow-hidden rounded-xl bg-[#f2ebe4] sm:rounded-2xl">
               @if (product.quantity <= 0) {
-                <span class="absolute top-4 right-4 z-10 rounded-full bg-burgundy px-3 py-1.5 text-[10px] font-bold tracking-wider text-ivory uppercase shadow-md">Out of stock</span>
+                <span class="absolute top-2 left-2 z-10 rounded-full bg-ivory/95 px-2.5 py-1.5 text-[9px] font-bold tracking-wide text-burgundy uppercase shadow-sm backdrop-blur sm:top-3 sm:left-3 sm:px-3 sm:text-[10px]">Épuisé</span>
               }
 <!--              @for (tag of product.tags; track tag) {-->
 <!--                <span-->
@@ -63,7 +68,7 @@
 <!--              }-->
               @if (product.productImage[0]; as image) {
                 <img
-                  class="h-80 w-full object-cover transition duration-500 group-hover:scale-105"
+                  class="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.025]"
                   [src]="image.signedUrl"
                   [alt]="image.altText || product.name"
                   [width]="image.width"
@@ -72,15 +77,17 @@
               }
               @else{
                 <img
-                  class="h-80 w-full object-cover transition duration-500 group-hover:scale-105"
+                  class="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.025]"
                   src="/no-image-placeholder.svg"
-                  alt="Product image unavailable"
+                  alt="Image du produit indisponible"
                 />
               }
             </div>
-            <p class="mt-4 text-xs font-bold tracking-wider text-terracotta uppercase">{{ product.category.name }}</p>
-            <h2 class="mt-1 font-serif text-xl font-semibold">{{ product.name }}</h2>
-            <p class="mt-1 font-semibold text-moroccan-green">{{ '$' + product.price.toFixed(2) }}</p>
+            <div class="px-0.5 pt-3 sm:pt-4">
+              <h2 class="line-clamp-2 text-sm leading-snug font-semibold sm:text-base">{{ product.name }}</h2>
+              <p class="mt-1 truncate text-xs text-dark-brown/50 sm:text-sm">{{ product.category.name }}</p>
+              <p class="mt-2 text-sm font-semibold text-moroccan-green sm:text-base">{{ product.price.toFixed(2) + ' €' }}</p>
+            </div>
           </button>
         </article>
       }
@@ -88,16 +95,24 @@
 
     @if (selectedProducts(); as products) {
       <div
-        class="fixed inset-0 z-50 mt-20 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm sm:p-6"
+        class="fixed inset-0 z-[110] flex items-end justify-center bg-black/65 backdrop-blur-sm sm:items-center sm:p-6"
         (click)="closePopup()"
       >
         <div
-          class="max-h-[90vh] w-full max-w-5xl overflow-hidden p-4 sm:overflow-y-clip sm:p-6 lg:p-8"
+          class="product-detail-scroll relative h-[100dvh] w-full max-w-5xl overflow-y-auto overscroll-contain bg-ivory px-4 pt-[max(4.5rem,env(safe-area-inset-top))] pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl sm:h-auto sm:max-h-[90vh] sm:rounded-[2rem] sm:p-6 lg:p-8"
           role="dialog"
           aria-modal="true"
           [attr.aria-label]="products[0].name"
           (click)="$event.stopPropagation()"
         >
+          <button
+            type="button"
+            class="fixed top-[max(1rem,env(safe-area-inset-top))] right-4 z-20 grid size-11 cursor-pointer place-items-center rounded-full border border-warm-gold/30 bg-ivory text-2xl leading-none text-dark-brown shadow-lg transition hover:bg-warm-gold/15 sm:absolute sm:top-4 sm:right-4"
+            aria-label="Fermer les détails du produit"
+            (click)="closePopup()"
+          >
+            <span aria-hidden="true" class="mb-1">&times;</span>
+          </button>
           <popup-shop-page [products]="products" />
         </div>
       </div>
