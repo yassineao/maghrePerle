@@ -41,10 +41,10 @@ This directory contains the **Products microservice**, the backend responsible f
 
 | Component | Responsibility |
 | --- | --- |
-| `Products/` | Products, categories, product images, and catalog APIs |
-| `user/` | Customer registration, login, JWT sessions, and authorization |
-| `cart/` | Shopping cart initialization and product selection |
-| `frontend/frontend/` | Angular storefront for browsing and shopping |
+| `Products` | Products, categories, product images, and catalog APIs |
+| `user` | Customer registration, login, JWT sessions, and authorization |
+| `cart` | Shopping cart initialization and product selection |
+| `frontend/frontend` | Angular storefront for browsing and shopping |
 
 ## Products service stack
 
