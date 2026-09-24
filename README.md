@@ -1,6 +1,6 @@
 # Maghreperle
 
-## E-commerce platform for Morocco
+## E-commerce platform for Moroccan clothing store
 
 Maghreperle is a modern online store designed for the Moroccan market. The platform is built with a microservice architecture so that catalog management, customer accounts, shopping carts, and the storefront can evolve independently.
 
