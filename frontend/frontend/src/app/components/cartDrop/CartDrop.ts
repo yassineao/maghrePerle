@@ -2,6 +2,7 @@ import { Component, HostListener, inject, signal } from '@angular/core';
 import { Cart_session } from '../../core/api/cart_api/Cart_session';
 import { Product } from '../../core/interfaces/Product';
 import { ProductImage } from '../../core/interfaces/ProductImage';
+import { SocialLinksService } from '../../core/config/social-links.service';
 
 @Component({
   selector: 'app-cart-drop',
@@ -9,6 +10,7 @@ import { ProductImage } from '../../core/interfaces/ProductImage';
 })
 export class CartDropComponent {
   private readonly cartSession = inject(Cart_session);
+  private readonly socialLinks = inject(SocialLinksService);
 
   protected readonly open = signal(false);
   protected readonly products = this.cartSession.products;
@@ -80,7 +82,7 @@ export class CartDropComponent {
       'Merci !',
     ].join('\n');
 
-    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+    window.open(this.socialLinks.whatsappUrl(message), '_blank', 'noopener,noreferrer');
   }
 
   @HostListener('document:keydown.escape')

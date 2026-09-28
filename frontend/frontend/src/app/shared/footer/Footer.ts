@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { SocialLinksService } from '../../core/config/social-links.service';
 
 @Component({
   selector: 'app-footer',
@@ -7,4 +8,6 @@ import { Component } from '@angular/core';
     class: 'block w-full',
   },
 })
-export class Footer {}
+export class Footer {
+  protected readonly instagramUrl = inject(SocialLinksService).instagramUrl;
+}
