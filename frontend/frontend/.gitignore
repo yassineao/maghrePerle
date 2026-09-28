@@ -31,6 +31,7 @@ yarn-error.log
 
 # Miscellaneous
 /.angular/cache
+src/app/core/config/social-links.generated.ts
 .sass-cache/
 /connect.lock
 /coverage

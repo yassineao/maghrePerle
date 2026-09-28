@@ -6,6 +6,4 @@ export const environment = {
   supabaseUrl: 'https://onljnirapesqrwssvrhg.supabase.co',
   supabasePublishableKey: 'sb_publishable_ju3Ee2Sr5SmuZ27xZBetjw_UYM69X5w',
   supabaseStorageBucketPublic: true,
-  whatsappNumber: '',
-  instagramUrl: 'https://www.instagram.com/maghreperle.boutique/',
 };

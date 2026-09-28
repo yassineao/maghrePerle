@@ -13,7 +13,7 @@ describe('NewsletterComponent', () => {
   it('links to the MaghrePerle Instagram profile', () => {
     const link = fixture.nativeElement.querySelector('a') as HTMLAnchorElement;
 
-    expect(link.href).toBe('https://www.instagram.com/maghreperle.boutique/');
+    expect(link.href).toBe('https://www.instagram.com/maghrebella.boutique/');
     expect(link.textContent).toContain('Instagram');
   });
 });

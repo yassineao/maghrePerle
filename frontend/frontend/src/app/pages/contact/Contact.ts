@@ -6,5 +6,9 @@ import { SocialLinksService } from '../../core/config/social-links.service';
   templateUrl: './Contact.html',
 })
 export class ContactPage {
-  protected readonly instagramUrl = inject(SocialLinksService).instagramUrl;
+  private readonly socialLinks = inject(SocialLinksService);
+  protected readonly instagramUrl = this.socialLinks.instagramUrl;
+  protected readonly whatsappUrl = this.socialLinks.whatsappUrl(
+    'Bonjour Maghrebella, je souhaite vous contacter au sujet de vos produits.',
+  );
 }
