@@ -52,7 +52,7 @@
         <ul class="max-h-80 divide-y divide-warm-gold/20 overflow-y-auto">
           @for (product of products(); track $index) {
             <li class="flex gap-3 px-5 py-4">
-              @if (product.productImage[0]; as image) {
+              @if (mainImage(product); as image) {
                 <img
                   class="size-16 flex-none rounded-xl bg-terracotta/10 object-cover"
                   [src]="image.signedUrl"
@@ -88,6 +88,14 @@
             <span>Total</span>
             <span class="font-serif text-xl text-moroccan-green">{{ total().toFixed(2) + ' €' }}</span>
           </div>
+          <button
+            class="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#1fb85a] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#128C7E]"
+            type="button"
+            (click)="sendOrder()"
+          >
+            <span aria-hidden="true">◉</span>
+            Commander par WhatsApp
+          </button>
         </footer>
       }
     </section>

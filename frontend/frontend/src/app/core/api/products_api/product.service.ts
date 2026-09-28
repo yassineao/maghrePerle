@@ -49,7 +49,9 @@ export class ProductsService {
         : this.getProductsFromSpring();
 
     this.productsRequest = productsSource.pipe(
-      map((products) => products.map((product) => this.parseProductOptions(product))),
+      map((products) =>
+        this.shareVariantImages(products.map((product) => this.parseProductOptions(product))),
+      ),
       tap(() => this.productsLoaded.set(true)),
       catchError((error) => {
         this.productsRequest = undefined;
@@ -116,7 +118,9 @@ export class ProductsService {
           );
 
     this.activeProductsRequest = productsSource.pipe(
-      map((products) => products.map((product) => this.parseProductOptions(product))),
+      map((products) =>
+        this.shareVariantImages(products.map((product) => this.parseProductOptions(product))),
+      ),
       tap(() => this.productsLoaded.set(true)),
       catchError((error) => {
         this.activeProductsRequest = undefined;
@@ -149,6 +153,28 @@ export class ProductsService {
       size,
       color,
     };
+  }
+
+  private shareVariantImages(products: Product[]): Product[] {
+    const imagesByProduct = new Map<string, Map<string, Product['productImage'][number]>>();
+
+    for (const product of products) {
+      const groupKey = `${product.category.id}:${product.name}`;
+      const images = imagesByProduct.get(groupKey) ?? new Map();
+      for (const image of product.productImage ?? []) {
+        images.set(image.id, image);
+      }
+      imagesByProduct.set(groupKey, images);
+    }
+
+    return products.map((product) => {
+      const groupKey = `${product.category.id}:${product.name}`;
+      const productImage = [...(imagesByProduct.get(groupKey)?.values() ?? [])].sort(
+        (left, right) => Number(right.mainImage) - Number(left.mainImage),
+      );
+
+      return { ...product, productImage };
+    });
   }
 
   private toProductRequest(product: Product): ProductCreateRequest {

@@ -38,6 +38,33 @@
             </div>
           </div>
 
+          <form class="mt-7 rounded-2xl border border-warm-gold/30 bg-ivory/70 p-5" [formGroup]="categoryForm" (ngSubmit)="addCategory()" novalidate>
+            <h3 class="font-serif text-xl font-semibold text-moroccan-green">Add a category</h3>
+            <p class="mt-1 text-sm text-dark-brown/55">Create a category and it will be selected for the new product.</p>
+            <div class="mt-4 grid gap-3 sm:grid-cols-[1fr_1.4fr_auto] sm:items-start">
+              <div>
+                <label class="block text-sm font-semibold" for="category-name">Category name</label>
+                <input id="category-name" class="mt-1.5 w-full rounded-xl border border-warm-gold bg-white px-3 py-2.5 text-sm outline-none focus:border-moroccan-green focus:ring-3 focus:ring-moroccan-green/10" type="text" formControlName="name" maxlength="120" placeholder="Accessories" />
+                @if (categoryForm.controls.name.touched && categoryForm.controls.name.invalid) {
+                  <p class="mt-1 text-xs text-burgundy">Enter a category name.</p>
+                }
+              </div>
+              <div>
+                <label class="block text-sm font-semibold" for="category-description">Description <span class="font-normal text-dark-brown/45">(optional)</span></label>
+                <input id="category-description" class="mt-1.5 w-full rounded-xl border border-warm-gold bg-white px-3 py-2.5 text-sm outline-none focus:border-moroccan-green focus:ring-3 focus:ring-moroccan-green/10" type="text" formControlName="description" maxlength="500" placeholder="Bags, belts, and jewelry" />
+              </div>
+              <button class="mt-6 cursor-pointer rounded-full bg-moroccan-green px-5 py-2.5 text-sm font-bold text-ivory transition hover:bg-burgundy disabled:cursor-wait disabled:opacity-60" type="submit" [disabled]="categorySubmitting()">
+                {{ categorySubmitting() ? 'Adding…' : 'Add category' }}
+              </button>
+            </div>
+            @if (categoryErrorMessage(); as message) {
+              <p class="mt-3 text-sm text-burgundy" role="alert">{{ message }}</p>
+            }
+            @if (categorySuccessMessage(); as message) {
+              <p class="mt-3 text-sm text-moroccan-green" role="status">{{ message }}</p>
+            }
+          </form>
+
           <form class="mt-7 space-y-5" [formGroup]="productForm" (ngSubmit)="addProduct()" novalidate>
             <div>
               <label class="block text-sm font-semibold" for="product-name">Product name</label>

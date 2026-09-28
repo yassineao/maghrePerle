@@ -40,6 +40,9 @@ export class AdminPage implements OnInit {
   protected readonly authenticatedUser = signal<UserResponse | null>(null);
   protected readonly categories = signal<Category[]>([]);
   protected readonly categoriesLoading = signal(false);
+  protected readonly categorySubmitting = signal(false);
+  protected readonly categoryErrorMessage = signal<string | null>(null);
+  protected readonly categorySuccessMessage = signal<string | null>(null);
   protected readonly productSubmitting = signal(false);
   protected readonly productErrorMessage = signal<string | null>(null);
   protected readonly productSuccessMessage = signal<string | null>(null);
@@ -77,13 +80,18 @@ export class AdminPage implements OnInit {
     active: [true],
   });
 
+  protected readonly categoryForm = this.formBuilder.group({
+    name: ['', [Validators.required, Validators.maxLength(120)]],
+    description: ['', Validators.maxLength(500)],
+  });
+
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
 
     this.userService
-      .sessionUser()
+      .getMe()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((user) => {
         if (user?.role.toUpperCase().replace(/^ROLE_/, '') === 'ADMIN') {
@@ -236,6 +244,44 @@ export class AdminPage implements OnInit {
       });
   }
 
+  protected addCategory(): void {
+    this.categoryErrorMessage.set(null);
+    this.categorySuccessMessage.set(null);
+
+    if (this.categoryForm.invalid) {
+      this.categoryForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.categoryForm.getRawValue();
+    this.categorySubmitting.set(true);
+    this.categoryService
+      .addCategory({
+        name: value.name.trim(),
+        description: value.description.trim(),
+        active: true,
+      })
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.categorySubmitting.set(false)),
+      )
+      .subscribe({
+        next: (category) => {
+          this.categories.update((categories) =>
+            [...categories.filter((item) => item.id !== category.id), category].sort((a, b) =>
+              a.name.localeCompare(b.name),
+            ),
+          );
+          this.productForm.controls.categoryId.setValue(category.id);
+          this.categoryForm.reset({ name: '', description: '' });
+          this.categorySuccessMessage.set(`Category “${category.name}” was added.`);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.categoryErrorMessage.set(this.getCategoryErrorMessage(error));
+        },
+      });
+  }
+
   protected addColor(color = this.productForm.controls.colorPicker.value): void {
     const normalizedColor = color.toUpperCase();
     this.colorsTouched.set(true);
@@ -346,5 +392,21 @@ export class AdminPage implements OnInit {
     }
 
     return 'The product could not be added. Please try again.';
+  }
+
+  private getCategoryErrorMessage(error: HttpErrorResponse): string {
+    if (error.status === 0) {
+      return 'The category service could not be reached. Check your connection and try again.';
+    }
+
+    if (error.status === 401 || error.status === 403) {
+      return 'Your admin session is not authorised to add categories. Sign in again and retry.';
+    }
+
+    if (typeof error.error?.message === 'string') {
+      return error.error.message;
+    }
+
+    return 'The category could not be added. Please try again.';
   }
 }

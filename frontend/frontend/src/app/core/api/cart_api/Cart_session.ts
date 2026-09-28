@@ -13,8 +13,11 @@ export interface CartProduct extends Product {
 export class Cart_session {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly cartState = signal<CartProduct[]>(this.readCart());
+  private readonly addedProductState = signal<CartProduct | null>(null);
+  private addedProductTimer: ReturnType<typeof setTimeout> | undefined;
 
   readonly products = this.cartState.asReadonly();
+  readonly addedProduct = this.addedProductState.asReadonly();
   readonly itemCount = computed(() => this.cartState().length);
   readonly total = computed(() =>
     this.cartState().reduce((sum, product) => sum + product.price, 0),
@@ -28,6 +31,12 @@ export class Cart_session {
     };
 
     this.updateCart([...this.cartState(), cartProduct]);
+    this.addedProductState.set(cartProduct);
+
+    if (isPlatformBrowser(this.platformId)) {
+      clearTimeout(this.addedProductTimer);
+      this.addedProductTimer = setTimeout(() => this.addedProductState.set(null), 2000);
+    }
   }
 
   delete_from_cart(product: Product): void {

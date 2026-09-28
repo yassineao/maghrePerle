@@ -21,16 +21,18 @@ export class CategoryService {
     return this.http.get<Category[]>(`${this.apiUrl}/category`);
   };
 
-  addCategory = (category: Category) => {
-    this.http.post(
-      `${this.apiUrl}/category`,
-      category,
-      {
-        withCredentials: true
-      }
+  addCategory = (category: Omit<Category, 'id'>): Observable<Category> => {
+    if (environment.productDataSource === 'supabase') {
+      return this.supabaseCatalogService.addCategory(category);
+    }
 
-    );
-  }
+    const accessToken =
+      typeof localStorage === 'undefined' ? null : localStorage.getItem('accessToken');
+    return this.http.post<Category>(`${this.apiUrl}/category`, category, {
+      withCredentials: true,
+      ...(accessToken ? { headers: { Authorization: `Bearer ${accessToken}` } } : {}),
+    });
+  };
 
   deleteCategory = (id: number) => {
     this.http.delete(`${this.apiUrl}/category/${id}`,

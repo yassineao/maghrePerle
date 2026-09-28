@@ -1,4 +1,4 @@
-package com.gloyoo.user.configuration;
+package com.gloyoo.messages.configuration;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -6,13 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -26,38 +22,25 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Value("${app.cors.allowed-origins:}") String configuredAllowedOrigins;
     @Value("${app.base-url:http://localhost:8080}") String productionUrl;
-    private final JwtAuthenticationFilter jwtAuthFilter;
+    @Value("${app.cors.allowed-origins:}") String configuredAllowedOrigins;
+    private final UserServiceAuthenticationFilter userServiceAuthenticationFilter;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter) {
-        this.jwtAuthFilter = jwtAuthFilter;
+    public SecurityConfig(UserServiceAuthenticationFilter userServiceAuthenticationFilter) {
+        this.userServiceAuthenticationFilter = userServiceAuthenticationFilter;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/", "/error", "/health", "/auth/**").permitAll()
-                        .requestMatchers(
-                                "/user/health",
-                                "/user/login",
-                                "/user/refresh",
-                                "/user/me"
-                        ).permitAll()
-
-                        // Admin endpoints
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-
-
-                        // Everything else needs login
-                        .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.GET, "/**").authenticated()
+                        .anyRequest().permitAll()
                 )
 
                 .exceptionHandling(ex -> ex
@@ -87,7 +70,7 @@ public class SecurityConfig {
                         })
                 )
 
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(userServiceAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -99,7 +82,6 @@ public class SecurityConfig {
                 "http://localhost:3000",
                 "http://localhost:4200",
                 "http://localhost:5173",
-                "https://products-swart-alpha.vercel.app",
                 productionUrl
         ));
 
@@ -132,15 +114,4 @@ public class SecurityConfig {
         return source;
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config
-    ) throws Exception {
-        return config.getAuthenticationManager();
-    }
 }

@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain chain) throws IOException, ServletException {
-        String token = getCookieValue(request, ACCESS_TOKEN_COOKIE);
+        String token = getAccessToken(request);
 
         if (token != null && !token.isBlank()) {
             try {
@@ -115,5 +115,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         return null;
+    }
+
+    private String getAccessToken(HttpServletRequest request) {
+        String authorization = request.getHeader("Authorization");
+        if (authorization != null && authorization.regionMatches(true, 0, "Bearer ", 0, 7)) {
+            String token = authorization.substring(7).trim();
+            if (!token.isBlank()) {
+                return token;
+            }
+        }
+
+        return getCookieValue(request, ACCESS_TOKEN_COOKIE);
     }
 }

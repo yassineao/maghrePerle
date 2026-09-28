@@ -100,6 +100,31 @@ export class SupabaseCatalogService {
     );
   }
 
+  addCategory(category: Omit<Category, 'id'>): Observable<Category> {
+    const params = new HttpParams().set('select', 'id:category_id,name,description,active');
+    const accessToken =
+      typeof localStorage === 'undefined' ? null : localStorage.getItem('accessToken');
+    let headers = this.headers().set('Prefer', 'return=representation');
+    if (accessToken) {
+      headers = headers.set('Authorization', `Bearer ${accessToken}`);
+    }
+
+    return this.requireConfiguration().pipe(
+      switchMap(() =>
+        this.http.post<SupabaseCategoryRow[]>(`${this.supabaseUrl}/rest/v1/category`, category, {
+          headers,
+          params,
+        }),
+      ),
+      map((rows) => {
+        if (!rows.length) {
+          throw new Error('Supabase did not return the created category.');
+        }
+        return this.toCategory(rows[0]);
+      }),
+    );
+  }
+
   getProductImages(productId: string): Observable<ProductImage[]> {
     const params = new HttpParams()
       .set(
@@ -134,7 +159,6 @@ export class SupabaseCatalogService {
     return this.signImages([...uniqueImages.values()]).pipe(
       map((signedImages) => {
         const imagesById = new Map(signedImages.map((image) => [image.id, image]));
-
         return rows.map((row) => ({
           id: row.id,
           name: row.name ?? '',

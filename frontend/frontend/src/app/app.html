@@ -3,3 +3,19 @@
   <router-outlet />
 </main>
 <app-footer />
+@if (addedProduct(); as product) {
+  <div
+    class="fixed right-5 bottom-5 z-[10000001] flex w-[min(22rem,calc(100vw-2.5rem))] items-center gap-3 rounded-2xl border border-warm-gold/40 bg-ivory px-4 py-3 text-dark-brown shadow-2xl shadow-dark-brown/25 animate-[fade-in_180ms_ease-out]"
+    role="status"
+    aria-live="polite"
+  >
+    @if (mainImage(product); as image) {
+      <img class="size-14 flex-none rounded-xl object-cover" [src]="image.signedUrl" [alt]="image.altText || product.name" />
+    }
+    <div class="min-w-0">
+      <p class="text-xs font-semibold text-moroccan-green">Ajouté au panier</p>
+      <p class="truncate font-serif font-semibold">{{ product.name }}</p>
+      <p class="text-sm font-bold text-burgundy">{{ product.price.toFixed(2) + ' €' }}</p>
+    </div>
+  </div>
+}

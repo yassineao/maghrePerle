@@ -1,0 +1,10 @@
+.env
+.git
+.idea
+.mvn
+target
+*.log
+compose.yaml
+HELP.md
+mvnw
+mvnw.cmd

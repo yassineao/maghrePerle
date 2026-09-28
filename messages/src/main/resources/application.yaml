@@ -1,0 +1,32 @@
+user-backend:
+  url: ${USER_BACKEND_URL:http://localhost:8081}
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: messages
+  datasource:
+    url: ${DATABASE_URL:${SUPABASE_DB_URL}}
+    username: ${DATABASE_USERNAME:${SUPABASE_DB_USERNAME:sa}}
+    password: ${DATABASE_PASSWORD:${SUPABASE_DB_PASSWORD:}}
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 0
+      connection-timeout: 10000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: public
+    open-in-view: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    default-schema: public
+    schemas:
+      - public
+    table: flyway_schema_history_messages 
+    baseline-on-migrate: true
+    baseline-version: 0
+    create-schemas: true

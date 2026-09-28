@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../../environment';
 import { LoginResponse, UserRequest, UserResponse } from '../../interfaces/User';
-import { catchError, map, Observable, of, tap } from 'rxjs';
+import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -46,6 +46,21 @@ export class UserService {
   }
 
   getMe(): Observable<UserResponse | null> {
+    return this.requestMe().pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status !== 401) {
+          return of(null);
+        }
+
+        return this.refreshSession().pipe(
+          switchMap((user) => (user ? this.requestMe() : of(null))),
+          catchError(() => of(null)),
+        );
+      }),
+    );
+  }
+
+  private requestMe(): Observable<UserResponse> {
     const accessToken =
       typeof localStorage === 'undefined' ? null : localStorage.getItem('accessToken');
 
@@ -60,7 +75,6 @@ export class UserService {
             localStorage.setItem('user', JSON.stringify(user));
           }
         }),
-        catchError(() => of(null)),
       );
   }
 
