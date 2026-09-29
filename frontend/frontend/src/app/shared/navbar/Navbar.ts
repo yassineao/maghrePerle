@@ -1,5 +1,5 @@
-import { isPlatformBrowser } from '@angular/common';
-import { Component, DestroyRef, HostListener, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { Component, DestroyRef, ElementRef, HostListener, inject, OnInit, PLATFORM_ID, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ProductsService } from '../../core/api/products_api/product.service';
@@ -13,6 +13,9 @@ import { CartDropComponent } from '../../components/cartDrop/CartDrop';
 export class Navbar implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly document = inject(DOCUMENT);
+  private readonly menuList = viewChild.required<ElementRef<HTMLElement>>('menuList');
+  private readonly menuToggle = viewChild.required<ElementRef<HTMLButtonElement>>('menuToggle');
   private readonly productsService = inject(ProductsService);
   protected readonly productsLoaded = this.productsService.productsLoaded;
   protected readonly menuOpen = signal(false);
@@ -21,6 +24,12 @@ export class Navbar implements OnInit {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
+
+    // Capture clicks even when another control stops event propagation.
+    this.document.addEventListener('click', this.onOutsideClick, true);
+    this.destroyRef.onDestroy(() => {
+      this.document.removeEventListener('click', this.onOutsideClick, true);
+    });
 
     this.productsService
       .getActiveProducts()
@@ -31,6 +40,15 @@ export class Navbar implements OnInit {
   protected toggleMenu(): void {
     this.menuOpen.update((open) => !open);
   }
+
+  private readonly onOutsideClick = (event: MouseEvent): void => {
+    if (!this.menuOpen()) return;
+
+    const path = event.composedPath();
+    if (!path.includes(this.menuList().nativeElement) && !path.includes(this.menuToggle().nativeElement)) {
+      this.closeMenu();
+    }
+  };
 
   protected closeMenu(): void {
     this.menuOpen.set(false);

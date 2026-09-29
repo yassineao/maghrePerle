@@ -31,6 +31,7 @@
         {{ productsLoaded() ? 'Découvrir' : 'Chargement…' }}
       </a>
       <button
+        #menuToggle
         class="grid size-[42px] cursor-pointer place-items-center rounded-full border border-warm-gold/40 bg-ivory/10 p-0 text-ivory hover:bg-ivory/20 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-warm-gold md:hidden"
         type="button"
         aria-controls="navbar-menu"
@@ -51,6 +52,7 @@
     </div>
 
     <div
+      #menuList
       id="navbar-menu"
       class="absolute top-[calc(100%+1px)] right-3 left-3 rounded-2xl border border-warm-gold/30 bg-moroccan-green/98 p-2 shadow-2xl shadow-dark-brown/40 backdrop-blur-xl transition-[opacity,transform,visibility] duration-150 motion-reduce:transition-none md:visible md:top-auto md:right-auto md:left-1/2 md:-translate-x-1/2 md:translate-y-0 md:border-0 md:bg-transparent md:p-0 md:opacity-100 md:shadow-none md:backdrop-blur-none"
       [class.invisible]="!menuOpen()"

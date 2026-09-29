@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, signal } from '@angular/core';
+import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { Cart_session } from '../../core/api/cart_api/Cart_session';
 import { Product } from '../../core/interfaces/Product';
 import { ProductImage } from '../../core/interfaces/ProductImage';
@@ -7,18 +7,25 @@ import { SocialLinksService } from '../../core/config/social-links.service';
 @Component({
   selector: 'app-cart-drop',
   templateUrl: './CartDrop.html',
+  styleUrl: './CartDrop.css',
 })
 export class CartDropComponent {
   private readonly cartSession = inject(Cart_session);
   private readonly socialLinks = inject(SocialLinksService);
 
   protected readonly open = signal(false);
+  private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('cartDialog');
   protected readonly products = this.cartSession.products;
   protected readonly itemCount = this.cartSession.itemCount;
   protected readonly total = this.cartSession.total;
 
   protected toggle(): void {
-    this.open.update((open) => !open);
+    if (this.open()) {
+      this.close();
+      return;
+    }
+    this.dialog().nativeElement.showModal();
+    this.open.set(true);
   }
 
   protected remove(product: Product): void {
@@ -85,9 +92,14 @@ export class CartDropComponent {
     window.open(this.socialLinks.whatsappUrl(message), '_blank', 'noopener,noreferrer');
   }
 
-  @HostListener('document:keydown.escape')
-  @HostListener('document:click')
   protected close(): void {
+    this.dialog().nativeElement.close();
     this.open.set(false);
+  }
+
+  protected closeOnBackdrop(event: MouseEvent): void {
+    if (event.target === this.dialog().nativeElement) {
+      this.close();
+    }
   }
 }

@@ -49,7 +49,7 @@
 
     <div class="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 sm:gap-y-12 lg:grid-cols-3">
       @for (product of visibleProducts(); track product.id) {
-        <article class="group min-w-0">
+        <article class="group relative min-w-0">
           <button
             type="button"
             class="block w-full cursor-pointer rounded-2xl text-left text-dark-brown outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-4 focus-visible:ring-offset-ivory"
@@ -88,6 +88,17 @@
               <p class="mt-1 truncate text-xs text-dark-brown/50 sm:text-sm">{{ product.category.name }}</p>
               <p class="mt-2 text-sm font-semibold text-moroccan-green sm:text-base">{{ product.price.toFixed(2) + ' €' }}</p>
             </div>
+          </button>
+          <button
+            type="button"
+            class="absolute top-2 right-2 z-10 grid size-10 cursor-pointer place-items-center rounded-full bg-ivory/95 text-burgundy shadow-md transition hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warm-gold sm:top-3 sm:right-3"
+            [attr.aria-label]="isFavorite(product.id) ? 'Retirer ' + product.name + ' des favoris' : 'Ajouter ' + product.name + ' aux favoris'"
+            [attr.aria-pressed]="isFavorite(product.id)"
+            (click)="toggleFavorite($event, product)"
+          >
+            <svg class="size-5" [class.fill-current]="isFavorite(product.id)" [class.fill-none]="!isFavorite(product.id)" viewBox="0 0 24 24" aria-hidden="true">
+              <path class="stroke-current" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z" />
+            </svg>
           </button>
         </article>
       }

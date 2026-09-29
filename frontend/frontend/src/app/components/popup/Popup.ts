@@ -1,15 +1,28 @@
-import { Component, computed, Input, OnChanges, signal, SimpleChanges } from '@angular/core';
+import { Component, computed, inject, Input, OnChanges, signal, SimpleChanges } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { Product } from '../../core/interfaces/Product';
 import { ProductImage } from '../../core/interfaces/ProductImage';
 import { CartButtonComponent } from '../cartButton/CartButton';
+import { FavoritesSession } from '../../core/api/favorites_api/FavoritesSession';
 
 @Component({
   selector: 'popup-shop-page',
   templateUrl: './Popup.html',
-  imports: [CartButtonComponent],
+  imports: [CartButtonComponent, NgTemplateOutlet],
 })
 export class PopupShopPage implements OnChanges {
   @Input({ required: true }) products: Product[] = [];
+
+  private readonly favorites = inject(FavoritesSession);
+
+  protected isFavorite(): boolean {
+    return !!this.products[0] && this.favorites.isFavorite(this.products[0].id);
+  }
+
+  protected toggleFavorite(): void {
+    // The first product represents the catalogue card across colour/size choices.
+    if (this.products[0]) this.favorites.toggle(this.products[0].id);
+  }
 
   protected readonly currentColor = signal('');
   protected readonly currentSize = signal('');

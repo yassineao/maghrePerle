@@ -7,6 +7,7 @@ import { Category } from '../../core/interfaces/Category';
 import { map, of } from 'rxjs';
 import { PopupShopPage } from '../popup/Popup';
 import { Product } from '../../core/interfaces/Product';
+import { FavoritesSession } from '../../core/api/favorites_api/FavoritesSession';
 
 const ALL_CATEGORY: Category = {
   id: '0',
@@ -39,7 +40,14 @@ export class CataloguePage implements OnInit {
   protected readonly selectedCategory = signal('Tous');
   private readonly destroyRef = inject(DestroyRef);
   private readonly productsService = inject(ProductsService);
+  private readonly favorites = inject(FavoritesSession);
   protected readonly products = signal<Product[]>([]);
+  protected readonly isFavorite = (productId: string): boolean => this.favorites.isFavorite(productId);
+
+  protected toggleFavorite(event: Event, product: Product): void {
+    event.stopPropagation();
+    this.favorites.toggle(product.id);
+  }
 
   ngOnInit(): void {
     if (this.productItems !== null) {

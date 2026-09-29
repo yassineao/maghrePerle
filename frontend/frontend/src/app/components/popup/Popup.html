@@ -36,6 +36,7 @@
           }
         </div>
 
+        <ng-template #productActions>
         <div class="mb-2 flex flex-col gap-3 min-[390px]:flex-row">
           <div class="flex-1">
             <cart-button [product]="product" [color]="currentColor()" [size]="currentSize()" />
@@ -43,10 +44,21 @@
           <div class="flex-1">
             <button
               type="button"
-              class="min-h-12 w-full rounded-full border border-warm-gold/50 bg-transparent px-4 py-3 text-sm font-bold text-moroccan-green transition hover:-translate-y-0.5 hover:border-warm-gold hover:bg-warm-gold/10">
-              Ajouter aux favoris
+              class="flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-warm-gold/50 px-4 py-3 text-sm font-bold text-moroccan-green transition hover:-translate-y-0.5 hover:border-warm-gold hover:bg-warm-gold/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warm-gold"
+              [class.bg-warm-gold/15]="isFavorite()"
+              [attr.aria-pressed]="isFavorite()"
+              [attr.aria-label]="isFavorite() ? 'Retirer ' + product.name + ' des favoris' : 'Ajouter ' + product.name + ' aux favoris'"
+              (click)="toggleFavorite()">
+              <svg class="size-5 shrink-0 text-burgundy" [class.fill-current]="isFavorite()" [class.fill-none]="!isFavorite()" viewBox="0 0 24 24" aria-hidden="true">
+                <path class="stroke-current" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z" />
+              </svg>
+              {{ isFavorite() ? 'Retirer des favoris' : 'Ajouter aux favoris' }}
             </button>
           </div>
+        </div>
+        </ng-template>
+        <div class="hidden md:block">
+          <ng-container [ngTemplateOutlet]="productActions" />
         </div>
       </div>
       <div class="min-w-0 md:flex-1 md:py-2">
@@ -110,6 +122,9 @@
               <span class="text-sm text-dark-brown/55">Aucune taille disponible</span>
             }
           </div>
+        </div>
+        <div class="mb-6 md:hidden">
+          <ng-container [ngTemplateOutlet]="productActions" />
         </div>
         <div>
           <span class="text-sm font-bold text-dark-brown">Description du produit :</span>
