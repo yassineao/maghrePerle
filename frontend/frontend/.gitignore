@@ -35,6 +35,8 @@ src/app/core/config/social-links.generated.ts
 .sass-cache/
 /connect.lock
 /coverage
+/playwright-report/
+/test-results/
 /libpeerconnection.log
 testem.log
 /typings

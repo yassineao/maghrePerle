@@ -105,7 +105,8 @@ public class SecurityConfig {
                 "http://localhost:3000",
                 "http://localhost:4200",
                 "http://localhost:5173",
-                "https://products-swart-alpha.vercel.app"
+                "https://products-swart-alpha.vercel.app",
+                "https://maghreperle.vercel.app/"
         ));
 
         for (String origin : configuredAllowedOrigins.split(",")) {

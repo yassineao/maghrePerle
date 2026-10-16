@@ -46,13 +46,26 @@ ng test
 
 ## Running end-to-end tests
 
-For end-to-end (e2e) testing, run:
+Install the Playwright Chromium browser once, then run the browser tests:
 
 ```bash
-ng e2e
+npx playwright install chromium
+npm run test:e2e
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Playwright starts its own Angular server on `http://127.0.0.1:4201` (the port must be free).
+The admin suite covers unauthenticated access to `/admin/products`, form validation,
+rejected credentials, admin login and reload, sign-out, non-admin access, and expired sessions.
+API responses are mocked; no running backend or real account is required. These tests verify
+frontend access behavior, not backend authorization enforcement.
+
+Use `npm run test:e2e:ui` for interactive mode or `npx playwright show-report` for the HTML report.
+
+Run only the admin component and routing tests with:
+
+```bash
+npm test -- --watch=false --include=src/app/pages/admin/Admin.spec.ts
+```
 
 ## Additional Resources
 

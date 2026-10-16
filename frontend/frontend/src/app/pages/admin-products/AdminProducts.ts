@@ -35,6 +35,7 @@ interface ProductGroup {
   selector: 'app-admin-products-page',
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './AdminProducts.html',
+  styleUrl: '../admin/Admin.css',
 })
 export class AdminProductsPage implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);
@@ -46,6 +47,10 @@ export class AdminProductsPage implements OnInit {
   private readonly productImageService = inject(ProductImageService);
 
   protected readonly loading = signal(true);
+  protected readonly mobilePanel = signal<'catalogue' | 'editor'>('catalogue');
+  protected readonly searchQuery = signal('');
+  protected readonly stockCount = computed(() => this.products().reduce((total, product) => total + product.quantity, 0));
+  protected readonly outOfStockCount = computed(() => this.products().filter((product) => product.quantity === 0).length);
   protected readonly accessDenied = signal(false);
   protected readonly products = signal<Product[]>([]);
   protected readonly categories = signal<Category[]>([]);
@@ -94,6 +99,12 @@ export class AdminProductsPage implements OnInit {
       })
       .sort((first, second) => first.name.localeCompare(second.name));
   });
+  protected readonly filteredGroups = computed(() => {
+    const query = this.searchQuery().trim().toLocaleLowerCase();
+    return this.productGroups().filter((group) =>
+      [group.name, ...group.sizes, ...group.colors].some((value) => value.toLocaleLowerCase().includes(query)),
+    );
+  });
   protected readonly selectedGroup = computed(() => {
     const selectedProduct = this.selectedProduct();
     const groupName = selectedProduct?.name ?? this.selectedGroupName();
@@ -132,6 +143,7 @@ export class AdminProductsPage implements OnInit {
   }
 
   protected editProduct(product: Product): void {
+    this.mobilePanel.set('editor');
     this.clearSelectedImages();
     this.errorMessage.set(null);
     this.successMessage.set(null);
@@ -155,6 +167,7 @@ export class AdminProductsPage implements OnInit {
   }
 
   protected manageProductGroup(group: ProductGroup): void {
+    this.mobilePanel.set('editor');
     this.clearSelectedImages();
     this.errorMessage.set(null);
     this.successMessage.set(null);

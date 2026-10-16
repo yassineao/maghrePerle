@@ -23,16 +23,16 @@
       <p class="relative max-w-sm text-sm leading-7 text-ivory/65">Cet espace est réservé aux membres autorisés de l’équipe MaghrePerle. Chaque connexion est protégée par le service d’administration sécurisé.</p>
     </div>
 
-    <div class="flex min-h-[560px] items-center p-7 sm:p-12 lg:p-16">
+    <div class="flex min-h-[560px] min-w-0 items-center p-4 sm:p-8 lg:p-10">
       @if (authenticatedUser(); as user) {
         <div class="w-full">
-          <div class="flex items-start justify-between gap-5 border-b border-warm-gold/25 pb-6">
+          <div class="flex flex-col items-start justify-between gap-5 border-b border-warm-gold/25 pb-6 xl:flex-row">
             <div>
               <p class="text-xs font-bold tracking-[0.22em] text-burgundy uppercase">Product management</p>
               <h2 class="mt-2 font-serif text-3xl font-semibold text-moroccan-green">Add a product</h2>
               <p class="mt-2 text-sm text-dark-brown/55">Signed in as {{ user.name }} · {{ user.role }}</p>
             </div>
-            <div class="flex shrink-0 flex-col gap-2 sm:flex-row">
+            <div class="flex w-full flex-wrap gap-2 xl:w-auto">
               <a class="rounded-full bg-moroccan-green px-4 py-2 text-center text-xs font-bold text-ivory no-underline shadow-md shadow-moroccan-green/15 transition hover:bg-burgundy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warm-gold" routerLink="/admin/products">Manage products</a>
               <button class="cursor-pointer rounded-full border border-moroccan-green px-4 py-2 text-xs font-bold text-moroccan-green transition hover:bg-moroccan-green hover:text-ivory focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warm-gold" type="button" (click)="signOut()">Sign out</button>
             </div>
@@ -41,7 +41,7 @@
           <form class="mt-7 rounded-2xl border border-warm-gold/30 bg-ivory/70 p-5" [formGroup]="categoryForm" (ngSubmit)="addCategory()" novalidate>
             <h3 class="font-serif text-xl font-semibold text-moroccan-green">Add a category</h3>
             <p class="mt-1 text-sm text-dark-brown/55">Create a category and it will be selected for the new product.</p>
-            <div class="mt-4 grid gap-3 sm:grid-cols-[1fr_1.4fr_auto] sm:items-start">
+            <div class="mt-4 grid gap-3 sm:items-start">
               <div>
                 <label class="block text-sm font-semibold" for="category-name">Category name</label>
                 <input id="category-name" class="mt-1.5 w-full rounded-xl border border-warm-gold bg-white px-3 py-2.5 text-sm outline-none focus:border-moroccan-green focus:ring-3 focus:ring-moroccan-green/10" type="text" formControlName="name" maxlength="120" placeholder="Accessories" />

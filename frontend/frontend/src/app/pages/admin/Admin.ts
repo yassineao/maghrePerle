@@ -24,6 +24,7 @@ interface SelectedImage {
   selector: 'app-admin-page',
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './Admin.html',
+  styleUrl: './Admin.css',
 })
 export class AdminPage implements OnInit {
   private readonly formBuilder = inject(NonNullableFormBuilder);
